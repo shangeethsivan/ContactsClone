@@ -20,13 +20,14 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.shangeeth.contactsclone.R;
+import com.shangeeth.contactsclone.adapters.CustomCursorAdapter;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_CODE = 100;
     ListView mListView;
-    private SimpleCursorAdapter mAdapter;
+    private CustomCursorAdapter mAdapter;
 
 
     @Override
@@ -67,9 +68,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
     public void loadContactsToList() {
 
-        mAdapter = new SimpleCursorAdapter(this, R.layout.contact_list_item, null,
-                new String[]{ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_URI},
-                new int[]{R.id.contact_name,R.id.contact_image}, 0);
+        mAdapter = new CustomCursorAdapter(this,null,0);
 
         mListView.setAdapter(mAdapter);
 
