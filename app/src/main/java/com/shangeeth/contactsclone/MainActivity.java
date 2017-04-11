@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.v7.widget.RecyclerView;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.app.LoaderManager;
@@ -21,6 +22,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private static final int REQUEST_CODE = 100;
     ListView mListView;
+
+    private RecyclerView mRecyclerView;
     private SimpleCursorAdapter mAdapter;
 
 
@@ -30,7 +33,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mListView = (ListView) findViewById(R.id.contacts_list);
+       // mListView = (ListView) findViewById(R.id.contacts_list);
+        mRecyclerView = (RecyclerView) findViewById(R.id.contacts_list);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M   &&  ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS)
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new String[]{ContactsContract.Contacts.DISPLAY_NAME},
                 new int[]{R.id.contact_name}, 0);
 
-        mListView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(1,null,this);
 
