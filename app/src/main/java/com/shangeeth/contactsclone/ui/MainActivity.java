@@ -1,7 +1,8 @@
-package com.shangeeth.contactsclone;
+package com.shangeeth.contactsclone.ui;
 
 import android.Manifest;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -13,8 +14,12 @@ import android.support.v4.content.ContextCompat;
 import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+
+import com.shangeeth.contactsclone.R;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -38,18 +43,33 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             ensurePermissions();
 
-        } else {
+        } else
             loadContactsToList();
-        }
+
+        setOnClickListeners();
 
     }
 
+    public void setOnClickListeners(){
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Cursor lCursor = (Cursor) mListView.getItemAtPosition(position);
+
+                String lContactId = lCursor.getString(lCursor.getColumnIndex(ContactsContract.Contacts._ID));
+
+                startActivity(new Intent(MainActivity.this,DetailActivity.class).putExtra("_ID",lContactId));
+            }
+        });
+
+    }
     public void loadContactsToList() {
 
-
         mAdapter = new SimpleCursorAdapter(this, R.layout.contact_list_item, null,
-                new String[]{ContactsContract.Contacts.DISPLAY_NAME},
-                new int[]{R.id.contact_name}, 0);
+                new String[]{ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_URI},
+                new int[]{R.id.contact_name,R.id.contact_image}, 0);
 
         mListView.setAdapter(mAdapter);
 
@@ -77,20 +97,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void ensurePermissions() {
 
-        // Should we show an explanation?
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.READ_CONTACTS)) {
 
-            // Show an explanation to the user *asynchronously* -- don't block
-            // this thread waiting for the user's response! After the user
-            // sees the explanation, try again to request the permission.
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_CONTACTS},
                     REQUEST_CODE);
 
         } else {
-
-            // No explanation needed, we can request the permission.
 
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_CONTACTS},
