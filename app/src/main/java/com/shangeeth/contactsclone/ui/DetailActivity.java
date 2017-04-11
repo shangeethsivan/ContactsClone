@@ -41,24 +41,16 @@ public class DetailActivity extends AppCompatActivity {
 
             mDisplayNameTV.setText(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
             mNumberTV.setText(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-            try {
 
-                Uri imageUri = Uri.parse(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)));
-
-                if (imageUri != null){
                     Picasso.with(this)
-                            .load(imageUri)
+                            .load(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)))
                             .resize(100, 100)
                             .centerCrop()
+                            .placeholder(R.drawable.contact_placeholder)
                             .transform(new RoundedTransformation(100,1))
                             .into(mProfilePicIV);
 
-                }
 
-            }
-            catch (Exception e ){
-                e.printStackTrace();
-            }
         }
 
         mCallButtonIV.setOnClickListener(new View.OnClickListener() {
