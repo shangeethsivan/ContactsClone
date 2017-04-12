@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,18 +24,19 @@ public class DetailActivity extends AppCompatActivity {
 
     private TextView mDisplayNameTV;
 
-    private ImageView mProfilePicIV;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-
         init();
+
+        Toolbar lToolbar = (Toolbar)findViewById(R.id.toolbar);
+        CollapsingToolbarLayout lCollapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
+
+        setSupportActionBar(lToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String lContactId = getIntent().getStringExtra("_ID");
 
@@ -46,18 +49,13 @@ public class DetailActivity extends AppCompatActivity {
                 ContactsContract.CommonDataKinds.Email.DISPLAY_NAME + " ASC");
 
         if (lPhoneCursor.moveToFirst()) {
-
-            mDisplayNameTV.setText(lPhoneCursor.getString(lPhoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+            lCollapsingToolbarLayout.setTitle(lPhoneCursor.getString(lPhoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
 
 
             Picasso.with(this)
                     .load(lPhoneCursor.getString(lPhoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)))
-                    .resize(100, 100)
-                    .centerCrop()
-                    .placeholder(R.drawable.contact_placeholder)
-                    .transform(new RoundedTransformation(100, 1))
-                    .into(mProfilePicIV);
-
+                    .placeholder(R.drawable.contact_bg)
+                    .into((ImageView)findViewById(R.id.image_toolbar));
 
             createMobileLayout(lPhoneCursor.getString(lPhoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 
@@ -92,6 +90,7 @@ public class DetailActivity extends AppCompatActivity {
         lMobileNoTV.setLayoutParams(lLayoutParams);
         lMobileNoTV.setGravity(Gravity.CENTER);
         lMobileNoTV.setTextSize(22.0f);
+        lMobileNoTV.setTextColor(getResources().getColor(R.color.black));
         lMobileNoTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +128,7 @@ public class DetailActivity extends AppCompatActivity {
         final TextView lEmailIdTV = new TextView(this);
         lEmailIdTV.setText(pEmailId);
         lEmailIdTV.setLayoutParams(lLayoutParams);
+        lEmailIdTV.setTextColor(getResources().getColor(R.color.black));
         lEmailIdTV.setGravity(Gravity.CENTER);
         lEmailIdTV.setTextSize(22.0f);
 
@@ -160,8 +160,6 @@ public class DetailActivity extends AppCompatActivity {
     public void init() {
 
         mDisplayNameTV = (TextView) findViewById(R.id.contact_name);
-
-        mProfilePicIV = (ImageView) findViewById(R.id.profile_pic);
 
     }
 
