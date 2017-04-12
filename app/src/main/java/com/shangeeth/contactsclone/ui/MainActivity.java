@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import com.shangeeth.contactsclone.R;
 import com.shangeeth.contactsclone.adapters.CustomCursorAdapter;
@@ -26,9 +25,8 @@ import com.shangeeth.contactsclone.adapters.CustomCursorAdapter;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_CODE = 100;
-    ListView mListView;
+    private ListView mListView;
     private CustomCursorAdapter mAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

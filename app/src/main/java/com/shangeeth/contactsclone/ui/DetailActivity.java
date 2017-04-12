@@ -7,6 +7,7 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -30,36 +31,53 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         init();
 
         String lContactId = getIntent().getStringExtra("_ID");
 
-        Cursor lCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+        Cursor lPhoneCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=? " , new String[]{lContactId},
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
-        if (lCursor.moveToFirst()) {
+        Cursor lEmailCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=? " , new String[]{lContactId},
+                ContactsContract.CommonDataKinds.Email.DISPLAY_NAME + " ASC");
 
-            mDisplayNameTV.setText(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+        if (lPhoneCursor.moveToFirst()) {
+
+            mDisplayNameTV.setText(lPhoneCursor.getString(lPhoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+
+
             Picasso.with(this)
-                    .load(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)))
+                    .load(lPhoneCursor.getString(lPhoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)))
                     .resize(100, 100)
                     .centerCrop()
                     .placeholder(R.drawable.contact_placeholder)
                     .transform(new RoundedTransformation(100, 1))
                     .into(mProfilePicIV);
-            createMobileNumerLayout(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+
+
+            createMobileLayout(lPhoneCursor.getString(lPhoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 
         }
 
-        while(lCursor.moveToNext()){
-            createMobileNumerLayout(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+        while(lPhoneCursor.moveToNext()){
+            createMobileLayout(lPhoneCursor.getString(lPhoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+        }
+
+        if(lEmailCursor.moveToFirst()){
+            createEmailLayout(lEmailCursor.getString(lEmailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)));
+            while(lEmailCursor.moveToNext()){
+                createEmailLayout(lEmailCursor.getString(lEmailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)));
+            }
         }
 
     }
 
 
-    public void createMobileNumerLayout(final String pMobileNumber){
+    public void createMobileLayout(final String pMobileNumber){
 
         LinearLayout lLinearLayout = new LinearLayout(this);
         LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -98,8 +116,46 @@ public class DetailActivity extends AppCompatActivity {
         ((LinearLayout)findViewById(R.id.container_linear_layout)).addView(lLinearLayout);
 
     }
+    public void createEmailLayout(final String pEmailId){
+
+        LinearLayout lLinearLayout = new LinearLayout(this);
+        LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0,30,0,0);
+        lLinearLayout.setLayoutParams(layoutParams);
+
+        LinearLayout.LayoutParams lLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1.0f);
 
 
+        final TextView lEmailIdTV = new TextView(this);
+        lEmailIdTV.setText(pEmailId);
+        lEmailIdTV.setLayoutParams(lLayoutParams);
+        lEmailIdTV.setGravity(Gravity.CENTER);
+        lEmailIdTV.setTextSize(22.0f);
+
+        lEmailIdTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_SENDTO,Uri.parse("mailto:"+lEmailIdTV.getText())));
+            }
+        });
+
+        lLinearLayout.addView(lEmailIdTV);
+
+        ((LinearLayout)findViewById(R.id.container_linear_layout)).addView(lLinearLayout);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
 
     public void init() {
 
