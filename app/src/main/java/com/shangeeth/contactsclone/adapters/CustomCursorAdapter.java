@@ -2,16 +2,12 @@ package com.shangeeth.contactsclone.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.media.Image;
-import android.net.Uri;
 import android.provider.ContactsContract;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.shangeeth.contactsclone.R;
