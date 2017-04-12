@@ -42,13 +42,13 @@ public class DetailActivity extends AppCompatActivity {
             mDisplayNameTV.setText(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
             mNumberTV.setText(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 
-                    Picasso.with(this)
-                            .load(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)))
-                            .resize(100, 100)
-                            .centerCrop()
-                            .placeholder(R.drawable.contact_placeholder)
-                            .transform(new RoundedTransformation(100,1))
-                            .into(mProfilePicIV);
+            Picasso.with(this)
+                    .load(lCursor.getString(lCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)))
+                    .resize(100, 100)
+                    .centerCrop()
+                    .placeholder(R.drawable.contact_placeholder)
+                    .transform(new RoundedTransformation(100, 1))
+                    .into(mProfilePicIV);
 
 
         }
@@ -58,8 +58,7 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mNumberTV.getText())));
-                }
-                catch(android.content.ActivityNotFoundException e){
+                } catch (android.content.ActivityNotFoundException e) {
                     Toast.makeText(DetailActivity.this, "No app to make a call", Toast.LENGTH_SHORT).show();
                 }
             }
